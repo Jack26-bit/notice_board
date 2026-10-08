@@ -2,15 +2,24 @@
 
 from datetime import datetime, timedelta, timezone
 from database import engine, Base, SessionLocal
-from models import Notice
+from models import Notice, User
 
 
 def seed():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
-    # Clear existing notices
+    # Clear existing notices and users
     db.query(Notice).delete()
+    db.query(User).delete()
+
+    from auth import get_password_hash
+    demo_user = User(
+        name="Demo Student",
+        email="demo@student.com",
+        password_hash=get_password_hash("student123")
+    )
+    db.add(demo_user)
 
     now = datetime.now(timezone.utc)
 

@@ -12,9 +12,9 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from database import engine, Base, get_db
-from models import Notice
-from schemas import NoticeCreate, NoticeUpdate, NoticeOut, LoginRequest, Token
-from auth import authenticate_admin, create_token, require_admin
+from models import Notice, User
+from schemas import NoticeCreate, NoticeUpdate, NoticeOut, LoginRequest, Token, StudentCreate, StudentLogin, StudentOut, TokenWithUser
+from auth import authenticate_admin, create_token, get_current_admin, get_current_student, get_password_hash, verify_password
 
 load_dotenv()
 
@@ -54,8 +54,40 @@ def health():
 def login(body: LoginRequest):
     if not authenticate_admin(body.username, body.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Bad credentials")
-    return Token(access_token=create_token(body.username))
+    return Token(access_token=create_token(body.username, "admin"))
 
+@app.post("/register", response_model=TokenWithUser, status_code=201)
+def register(body: StudentCreate, db: Session = Depends(get_db)):
+    if db.query(User).filter(User.email == body.email).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    user = User(
+        name=body.name,
+        email=body.email,
+        password_hash=get_password_hash(body.password)
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    
+    token = create_token(str(user.id), "student")
+    return TokenWithUser(access_token=token, user=user)
+
+@app.post("/student/login", response_model=TokenWithUser)
+def student_login(body: StudentLogin, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == body.email).first()
+    if not user or not verify_password(body.password, user.password_hash):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    token = create_token(str(user.id), "student")
+    return TokenWithUser(access_token=token, user=user)
+
+@app.get("/me", response_model=StudentOut)
+def get_me(user_id: str = Depends(get_current_student), db: Session = Depends(get_db)):
+    user = db.query(User).get(int(user_id))
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 # --- Public notices ---
 
@@ -65,6 +97,7 @@ def list_notices(
     q: Optional[str] = Query(None),
     include_expired: bool = Query(False),
     db: Session = Depends(get_db),
+    _student_or_admin: str = Depends(get_current_student),
 ):
     """Public endpoint. Returns non-expired notices sorted: pinned → urgent → newest."""
     query = db.query(Notice)
@@ -103,7 +136,7 @@ def list_notices(
 def create_notice(
     body: NoticeCreate,
     db: Session = Depends(get_db),
-    _admin: str = Depends(require_admin),
+    _admin: str = Depends(get_current_admin),
 ):
     notice = Notice(**body.model_dump())
     db.add(notice)
@@ -117,7 +150,7 @@ def update_notice(
     notice_id: int,
     body: NoticeUpdate,
     db: Session = Depends(get_db),
-    _admin: str = Depends(require_admin),
+    _admin: str = Depends(get_current_admin),
 ):
     notice = db.query(Notice).get(notice_id)
     if not notice:
@@ -133,7 +166,7 @@ def update_notice(
 def delete_notice(
     notice_id: int,
     db: Session = Depends(get_db),
-    _admin: str = Depends(require_admin),
+    _admin: str = Depends(get_current_admin),
 ):
     notice = db.query(Notice).get(notice_id)
     if not notice:

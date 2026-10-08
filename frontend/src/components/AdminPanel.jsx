@@ -18,7 +18,7 @@ export default function AdminPanel({ onLogout }) {
   const load = useCallback(async () => {
     try {
       setError(null);
-      const data = await fetchNotices({ includeExpired: true });
+      const data = await fetchNotices({ includeExpired: true, isAdminCall: true });
       setNotices(data);
     } catch (e) {
       if (e.message.includes("401") || e.message.includes("token")) {

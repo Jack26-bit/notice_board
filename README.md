@@ -160,22 +160,29 @@ cd notice-board/backend
 python seed.py
 ```
 
-## Default Admin Credentials
+## Default Demo Credentials
 
-Set via environment variables. Default in `.env.example`:
+**Admin**
 - **Username**: `admin`
 - **Password**: `admin123`
 
+**Student**
+- **Email**: `demo@student.com`
+- **Password**: `student123`
+
 ## API Endpoints
 
-| Method | Path              | Auth   | Description                     |
-|--------|-------------------|--------|---------------------------------|
-| GET    | `/health`         | Public | Health check                    |
-| GET    | `/notices`        | Public | List non-expired notices        |
-| POST   | `/login`          | Public | Get JWT token                   |
-| POST   | `/notices`        | Admin  | Create a notice                 |
-| PUT    | `/notices/{id}`   | Admin  | Update a notice                 |
-| DELETE | `/notices/{id}`   | Admin  | Delete a notice                 |
+| Method | Path              | Auth    | Description                     |
+|--------|-------------------|---------|---------------------------------|
+| GET    | `/health`         | Public  | Health check                    |
+| POST   | `/login`          | Public  | Admin login                     |
+| POST   | `/register`       | Public  | Register a new student          |
+| POST   | `/student/login`  | Public  | Student login                   |
+| GET    | `/me`             | Student | Get current student profile     |
+| GET    | `/notices`        | Auth    | List notices (Student or Admin) |
+| POST   | `/notices`        | Admin   | Create a notice                 |
+| PUT    | `/notices/{id}`   | Admin   | Update a notice                 |
+| DELETE | `/notices/{id}`   | Admin   | Delete a notice                 |
 
 **Query params** for `GET /notices`:
 - `category` — filter by Exam, Event, Holiday, or General

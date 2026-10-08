@@ -48,3 +48,29 @@ class NoticeOut(BaseModel):
     expires_at: Optional[datetime]
 
     model_config = {"from_attributes": True}
+
+
+# --- Students ---
+
+from pydantic import EmailStr
+
+class StudentCreate(BaseModel):
+    name: str = Field(..., min_length=1)
+    email: EmailStr
+    password: str = Field(..., min_length=6)
+
+class StudentLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class StudentOut(BaseModel):
+    id: int
+    name: str
+    email: str
+    created_at: datetime
+    model_config = {"from_attributes": True}
+
+class TokenWithUser(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: StudentOut

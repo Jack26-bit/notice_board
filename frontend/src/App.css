@@ -8,53 +8,62 @@
 
 /* --- CSS Custom Properties --- */
 :root {
-  /* Brand palette */
-  --color-primary: #4f46e5;
-  --color-primary-light: #818cf8;
-  --color-primary-dark: #3730a3;
+  /* Brand palette - Fidelity Deep Burgundy */
+  --color-primary: #5b2020; /* primary-container */
+  --color-primary-light: #904948; /* surface-tint */
+  --color-primary-dark: #3f0b0d; /* primary */
 
   /* Urgent */
-  --color-urgent: #ef4444;
-  --color-urgent-light: #fca5a5;
-  --color-urgent-bg: #fef2f2;
+  --color-urgent: #ba1a1a;
+  --color-urgent-light: #ffdad6;
+  --color-urgent-bg: #ffdad6;
 
   /* Category chips */
-  --color-exam: #f59e0b;
-  --color-event: #8b5cf6;
-  --color-holiday: #10b981;
-  --color-general: #6b7280;
+  --color-exam: #572600; /* tertiary-container */
+  --color-event: #6e5b43; /* secondary */
+  --color-holiday: #c8753d; /* terracotta accent */
+  --color-general: #a18c71; /* taupe */
 
   /* Surface & text — light theme */
-  --bg-page: #f4f5f7;
-  --bg-card: #ffffff;
-  --bg-input: #ffffff;
-  --bg-nav: #ffffff;
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
-  --text-muted: #9ca3af;
-  --border-color: #e5e7eb;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
-  --shadow-lg: 0 10px 30px rgba(0,0,0,.1);
-  --radius: 12px;
-  --radius-sm: 8px;
+  --bg-page: #fef9f0; /* surface / background */
+  --bg-card: #f8f3ea; /* surface-container-low */
+  --bg-input: #ffffff; /* surface-container-lowest */
+  --bg-nav: #fef9f0;
+  
+  --text-primary: #1d1c16; /* on-surface */
+  --text-secondary: #534342; /* on-surface-variant */
+  --text-muted: #867371; /* outline */
+  
+  --border-color: #d9c1c0; /* outline-variant */
+  
+  --shadow-sm: 0 1px 3px rgba(91, 32, 32, .05), 0 1px 2px rgba(91, 32, 32, .03);
+  --shadow-md: 0 4px 12px rgba(91, 32, 32, .07);
+  --shadow-lg: 0 10px 30px rgba(91, 32, 32, .09);
+  
+  --radius: 0.5rem;
+  --radius-sm: 0.25rem;
+  --radius-lg: 1rem;
+  
   --transition: .2s ease;
 }
 
 /* --- Dark Theme --- */
 [data-theme="dark"] {
-  --bg-page: #0f1117;
-  --bg-card: #1a1d2e;
-  --bg-input: #252839;
-  --bg-nav: #151723;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border-color: #2e3348;
+  --bg-page: #1d1c16;
+  --bg-card: #32302b; /* inverse-surface */
+  --bg-input: #1d1c16;
+  --bg-nav: #1d1c16;
+  --text-primary: #f5f0e7; /* inverse-on-surface */
+  --text-secondary: #d9c1c0;
+  --text-muted: #867371;
+  --border-color: #534342;
   --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
   --shadow-md: 0 4px 12px rgba(0,0,0,.4);
   --shadow-lg: 0 10px 30px rgba(0,0,0,.5);
-  --color-urgent-bg: #3b1a1a;
+  --color-urgent-bg: #93000a;
+  --color-primary: #ffb3b0; /* inverse-primary */
+  --color-primary-light: #ffdad8;
+  --color-primary-dark: #d98582;
 }
 
 /* --- Reset & Base --- */

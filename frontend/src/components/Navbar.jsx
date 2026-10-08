@@ -1,20 +1,16 @@
-/**
- * Navbar — App header with brand, dark mode toggle, TV mode, admin link.
- */
-
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
 export default function Navbar({ theme, onToggleTheme }) {
   const location = useLocation();
   const isAdmin = location.pathname === "/admin";
+  const { user, logout } = useAuth();
 
   const handleTvMode = () => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
-      document.body.classList.remove("tv-mode");
     } else {
       document.documentElement.requestFullscreen().catch(() => {});
-      document.body.classList.add("tv-mode");
     }
   };
 
@@ -36,6 +32,22 @@ export default function Navbar({ theme, onToggleTheme }) {
           {theme === "dark" ? "☀️" : "🌙"}
         </button>
 
+        {!isAdmin && user && (
+          <>
+            <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)", fontWeight: 500 }}>
+              Hi, {user.name.split(" ")[0]}
+            </span>
+            <button className="btn btn-sm" onClick={logout}>Logout</button>
+          </>
+        )}
+
+        {!isAdmin && !user && (
+          <>
+            <Link to="/login" className="btn btn-sm">Login</Link>
+            <Link to="/register" className="btn btn-primary btn-sm">Register</Link>
+          </>
+        )}
+
         {isAdmin ? (
           <Link to="/" className="btn btn-sm">← Feed</Link>
         ) : (
@@ -45,3 +57,4 @@ export default function Navbar({ theme, onToggleTheme }) {
     </nav>
   );
 }
+
